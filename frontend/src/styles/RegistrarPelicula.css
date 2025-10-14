@@ -1,0 +1,90 @@
+.registro-container {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+h2, h3 {
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.formulario {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.formulario input,
+.formulario select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  font-size: 14px;
+  transition: border 0.3s ease;
+}
+
+.formulario input:focus,
+.formulario select:focus {
+  border-color: #4cafef;
+}
+
+button {
+  grid-column: 1 / -1;
+  padding: 12px;
+  background: #4cafef;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background: #379fe0;
+}
+
+.lista-peliculas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.card-pelicula {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.card-pelicula:hover {
+  transform: scale(1.02);
+}
+
+.card-pelicula img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.card-pelicula div {
+  padding: 10px;
+}
+
+.card-pelicula h4 {
+  margin: 0 0 5px 0;
+}
+
+.card-pelicula p {
+  margin: 4px 0;
+  color: #555;
+}
+
+.card-pelicula small {
+  color: #777;
+}

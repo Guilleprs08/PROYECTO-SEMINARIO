@@ -1,0 +1,174 @@
+/* ===== Configuración del grid (UN SOLO :root) ===== */
+:root{
+  --grid-gap: 12px;     /* separación entre tarjetas */
+  /* --card-h eliminado: la card ahora es auto */
+  --thumb-h: 200px;     /* alto máximo visual sugerido para la imagen */
+}
+
+/* ===== Galería: altura del viewport desacoplada del alto de la card ===== */
+.gallery-viewport{
+  /* Altura flexible, ya no depende de la altura de la card */
+  max-height: 70vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.gallery-grid{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--grid-gap);
+}
+
+/* Tarjeta (alto AUTO y contenido fluye) */
+.prod-card{
+  box-sizing: border-box;
+  /* height: var(--card-h);  ← eliminado */
+  display: flex;
+  flex-direction: column;
+  gap: 6px; /* pequeño espacio entre bloques internos */
+  border: 0;
+  border-radius: 14px;
+  padding: .75rem;
+  background: linear-gradient(180deg,#ffd7f0 0,#e6d3ff 100%);
+  position: relative;
+  text-align: left;
+  overflow: hidden;
+}
+.prod-card.disabled{ cursor: not-allowed; }
+
+/* Contenedor de imagen (alto adaptable con proporción) */
+.prod-thumb{
+  /* En lugar de fijar altura exacta, usamos una proporción + tope opcional */
+  /* flex: 0 0 var(--thumb-h); ← eliminado */
+  flex: 0 0 auto;
+  aspect-ratio: 16 / 9;           /* mantiene coherencia visual del thumb */
+  max-height: var(--thumb-h);     /* tope suave; puedes quitarlo si deseas */
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 10px;
+  background: rgba(255,255,255,.7);
+}
+.prod-thumb img{
+  width: 100%;
+  height: 100%;
+  object-fit: contain;            /* evita recortes; usa cover si quieres llenar */
+}
+
+/* Badges de estado */
+.estado-badge{
+  position: absolute; top: 8px; left: 10px; z-index: 2;
+  padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700;
+  color: #fff; box-shadow: 0 2px 10px rgba(0,0,0,.15); backdrop-filter: blur(4px);
+}
+.badge-danger{  background: linear-gradient(135deg,#ef4444,#b91c1c); }
+.badge-warning{ background: linear-gradient(135deg,#f59e0b,#d97706); }
+.badge-neutral{ background: linear-gradient(135deg,#9ca3af,#6b7280); }
+
+/* Texto (permitimos múltiples líneas sin recorte) */
+.prod-name{ font-weight: 700; margin-top: .25rem; line-height: 1.2; color: #1f2937; }
+.prod-price{ font-size: .95rem; opacity: .9; color: #111827; }
+.prod-meta{ font-size: 12px; color: #374151; opacity: .85; margin-top: 2px; }
+
+/* Pills de categorías: separación uniforme */
+.pill-row{
+  display: flex; flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: .5rem;
+}
+.pill-row > .btn{
+  margin: 0;
+  padding: 4px 10px;
+  border-radius: 999px;
+  line-height: 1.1;
+}
+
+/* Responsive: en móvil 1 columna; viewport flexible */
+@media (max-width: 480px){
+  .gallery-grid{ grid-template-columns: 1fr; }
+  .gallery-viewport{
+    max-height: 75vh;  /* altura flexible también en móvil */
+  }
+}
+
+/* ====== Uploader (subir imagen) ====== */
+.upload-dropzone{
+  position: relative;
+  border: 2px dashed #cbd5e1;
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  color: #475569;
+  min-height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: border-color .15s ease, background .15s ease, box-shadow .15s ease;
+}
+
+/* estado hover/drag */
+.upload-dropzone:hover,
+.upload-dropzone.is-dragover{
+  border-color: #7c3aed;           /* violeta suave */
+  background: #f3e8ff;
+  box-shadow: 0 4px 18px rgba(124,58,237,.12);
+}
+
+/* input ocupa toda el área pero invisible (click en cualquier parte) */
+.upload-dropzone input[type="file"]{
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* icono + texto opcional */
+.upload-icon{
+  width: 26px; height: 26px;
+  display: inline-block;
+  border-radius: 6px;
+  background: #e9d5ff;
+}
+.upload-hint{
+  font-size: .9rem;
+  color: #334155;
+}
+
+/* vista previa cuando ya hay imagen */
+.upload-preview{
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.upload-thumb{
+  width: 72px; height: 72px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+.upload-filename{
+  font-size: .9rem;
+  color: #1f2937;
+  max-width: 260px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* botón de quitar (si lo usas) */
+.upload-remove{
+  margin-left: auto;
+  background: transparent;
+  border: 0;
+  color: #ef4444;
+  font-weight: 600;
+  cursor: pointer;
+}
+.upload-remove:hover{ text-decoration: underline; }

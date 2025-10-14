@@ -1,0 +1,25 @@
+.custom-select-wrapper {
+  width: 120px;
+  position: relative;
+}
+
+.custom-select-invisible {
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.chevron-icon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  pointer-events: none;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  z-index: 1;
+}

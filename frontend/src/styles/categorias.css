@@ -1,0 +1,178 @@
+.categorias-container {
+  display: flex;
+  gap: 2rem;
+  padding: 20px;
+  flex-wrap: wrap;
+}
+
+/* Tarjetas */
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  flex: 1;
+  min-width: 300px;
+}
+
+.card h3 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #1a2b4c;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Inputs */
+.card input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+  transition: border 0.3s ease;
+}
+
+.card input[type="text"]:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+/* Botones */
+.btn-azul {
+  background: #1d9bf0;
+  color: white;
+  padding: 10px;
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-verde {
+  background: linear-gradient(90deg, #00c853, #00e676);
+  color: white;
+  padding: 10px;
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-rojo {
+  background: #e53935;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 6px rgba(229, 57, 53, 0.4);
+}
+
+.btn-rojo:hover {
+  background: #d32f2f;
+}
+
+/* Lista categorías */
+.lista-categorias {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.item-categoria {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8f9fc;
+  padding: 12px;
+  border-radius: 10px;
+  border-left: 4px solid #3b82f6;
+}
+
+.item-categoria p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #444;
+}
+
+/* Header lista */
+.header-lista {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.badge {
+  background: #3b82f6;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+/* Buscador */
+.buscador {
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.buscador input {
+  width: 100%;
+  padding: 10px 10px 10px 35px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.buscador input:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.icono-buscar {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  color: #888;
+}
+
+/* 📌 Contenedor de la lista con scroll */
+.lista-categorias {
+  max-height: 300px;  
+  overflow-y: auto;   
+  padding-right: 5px;  
+}
+
+/* Opcional: estilizar el scroll */
+.lista-categorias::-webkit-scrollbar {
+  width: 6px;
+}
+.lista-categorias::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 3px;
+}
+.lista-categorias::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}

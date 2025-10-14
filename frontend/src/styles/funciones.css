@@ -1,0 +1,274 @@
+/* Tarjeta por sala */
+.panel-sala {
+  background: #98c1d9; /* azul claro */
+  border-radius: 16px;
+  padding: 18px;
+  color: #fff;
+  min-height: 440px;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+}
+
+.panel-sala__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.panel-sala__title {
+  font-weight: 700;
+}
+
+.panel-sala__body {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Mensaje cuando no hay funciones */
+.panel-sala__body .no-funciones {
+  text-align: center;
+  color: #fff; /* blanco */
+  font-size: 0.9rem;
+  padding: 16px 0;
+}
+
+/* Chip de hora */
+.hora-chip {
+  border: 0;
+  width: 210px;
+  margin: 0 auto;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #56ab2f, #a8e063);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.hora-chip:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.28);
+}
+
+.hora-chip__icon {
+  font-size: 18px;
+}
+
+.hora-chip__hora {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.hora-chip__label {
+  font-size: 12px;
+  opacity: .9;
+}
+
+/* Botón flotante */
+.fab-add {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  border: none;
+  font-size: 34px;
+  color: #fff;
+  background: linear-gradient(135deg, #ff758c, #ff7eb3);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform .15s ease, box-shadow .15s ease;
+  box-shadow: 0 10px 22px rgba(0,0,0,.25);
+  z-index: 1050;
+}
+
+.fab-add:hover {
+  transform: translateY(-2px);
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, .55);
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  z-index: 1055;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 720px;
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0,0,0,.3);
+}
+
+.modal-card__header,
+.modal-card__footer {
+  padding: 14px 16px;
+  background: #f7f7f8;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-card__body {
+  padding: 16px;
+}
+
+/* Layout de 2 columnas × 2 filas para inputs */
+.modal-card__body .row.g-3 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+/* Botones del modal juntos */
+.modal-card__footer button {
+  margin-right: 8px;
+}
+
+.btn-close {
+  background: transparent;
+  border: 0;
+  width: 32px;
+  height: 32px;
+  position: relative;
+}
+
+.btn-close::before,
+.btn-close::after {
+  content: "";
+  position: absolute;
+  top: 15px;
+  left: 8px;
+  width: 16px;
+  height: 2px;
+  background: #333;
+}
+
+.btn-close::before {
+  transform: rotate(45deg);
+}
+
+.btn-close::after {
+  transform: rotate(-45deg);
+}
+
+/* --- HoraChip (tarjeta de función) --- */
+.hora-chip{
+  width:100%;
+  border:0;
+  border-radius:14px;
+  padding:10px;
+  background: linear-gradient(180deg,#9be15d,#00e3ae);
+  color:#0b2e13;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  text-align:left;
+  transition: transform .06s ease, filter .12s ease;
+}
+.hora-chip:hover{ transform: translateY(-1px); filter:brightness(0.98); }
+.hora-chip__poster{
+  width:48px; height:64px; object-fit:cover; border-radius:8px; flex:0 0 48px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.15);
+}
+.hora-chip__poster.placeholder{
+  background: rgba(255,255,255,.35);
+  display:inline-block;
+}
+.hora-chip__content{ flex:1 1 auto; min-width:0; }
+.hora-chip__time{ font-weight:600; display:flex; align-items:center; }
+.hora-chip__title{
+  font-weight:700; line-height:1.15; margin-top:2px; white-space:nowrap;
+  overflow:hidden; text-overflow:ellipsis;
+}
+.hora-chip__meta{ margin-top:4px; display:flex; align-items:center; justify-content:space-between; }
+.hora-chip__price{ font-weight:800; }
+
+/* Línea pequeña para la fecha dentro del chip */
+.hora-chip__date {
+  font-size: 0.85rem;
+  opacity: .9;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+
+/* Grid de salas: columnas responsivas */
+.grid-salas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 20px;
+  align-items: stretch;
+}
+
+/* Tarjeta de sala: altura fija y contenido desplazable */
+.sala-card {
+  display: flex;
+  flex-direction: column;
+  /* ajusta la altura a tu layout: */
+  height: calc(100vh - 260px); /* ocupa la ventana menos header/filtros */
+  min-height: 360px;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.08);
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(6px);
+}
+
+.sala-card__header {
+  padding: 12px 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,.12);
+}
+
+.sala-card__body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+/* Scrollbar sutil (opcional) */
+.sala-card__body::-webkit-scrollbar { width: 8px; }
+.sala-card__body::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background: rgba(0,0,0,.2);
+}
+
+/* En móviles, baja un poco la altura para que no tape el footer */
+@media (max-width: 992px) {
+  .sala-card { height: calc(100vh - 300px); }
+  .grid-salas { grid-template-columns: 1fr; }
+}
+
+.sala-card {
+  background: #d8ecff;             /* celeste */
+  border: 1px solid rgba(0,0,0,.06);
+}
+
+/* Evento reservado (rosado) */
+.hora-chip--evento{
+  background: linear-gradient(90deg,#ff6aa7 0%,#ff98c3 100%);
+  border: none; color: #fff;
+}
+.hora-chip--evento .hora-chip__title,
+.hora-chip--evento .hora-chip__date,
+.hora-chip--evento .hora-chip__time { color:#fff; }
+.badge-evento{ background:#fff; color:#cc2a6a; border-radius:6px; font-weight:600; }

@@ -1,0 +1,196 @@
+:root{
+  --cc-bg:#f7f8fa;
+  --cc-card:#fff;
+  --cc-border:#e9ecf1;
+  --cc-txt:#1f2937;
+  --cc-muted:#6b7280;
+  --cc-primary:#10b981;
+  --cc-primary-600:#059669;
+  --cc-row:#fbfcfe;
+}
+
+.cc-page{
+  padding:24px;
+  background:var(--cc-bg);
+  min-height:100%;
+  color:var(--cc-txt);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+.cc-head h2{ margin:0 0 4px; font-size:26px; font-weight:700; }
+.cc-sub{ margin:0 0 16px; color:var(--cc-muted); }
+
+.cc-card{
+  background:var(--cc-card);
+  border:1px solid var(--cc-border);
+  border-radius:14px;
+  box-shadow: 0 2px 10px rgba(16,24,40,.04);
+  padding:16px;
+  margin-bottom:16px;
+}
+
+.cc-filters{
+  display:grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap:12px;
+  align-items:end;
+}
+.cc-field{ display:flex; flex-direction:column; gap:6px; }
+.cc-field label{ font-size:12px; color:var(--cc-muted); }
+.cc-field select,
+.cc-field input{
+  height:40px; border:1px solid var(--cc-border);
+  border-radius:10px; padding:0 10px; background:#fff; outline:none;
+}
+.cc-field input:disabled{ background:#f3f4f6; color:#9ca3af; }
+
+.span-3{ grid-column:1 / -1; }
+
+.cc-actions{ grid-column:1 / -1; display:flex; gap:10px; }
+.btn-primary{
+  height:42px; padding:0 18px;
+  background:var(--cc-primary);
+  border:0; border-radius:10px; color:#fff; font-weight:600; cursor:pointer;
+}
+.btn-primary:hover{ background:var(--cc-primary-600); }
+
+.cc-results{ opacity:0; transform:translateY(6px); transition: all .25s ease; }
+.cc-results.show{ opacity:1; transform:translateY(0); }
+
+.cc-table-wrap{ overflow:auto; max-height:60vh; }
+.cc-table{ width:100%; border-collapse:separate; border-spacing:0; }
+.cc-table thead th{
+  position:sticky; top:0; z-index:1;
+  background:#f9fafb; color:#111827;
+  font-weight:700; letter-spacing:.2px;
+  border-bottom:1px solid var(--cc-border);
+  padding:12px 10px; text-align:left;
+}
+.cc-table th.num, .cc-table td.num{ text-align:right; white-space:nowrap; }
+.cc-table tbody td{
+  padding:12px 10px; border-bottom:1px solid #f1f5f9;
+}
+.cc-table tbody tr:nth-child(odd){ background:var(--cc-row); }
+.cc-table tbody tr:hover{ background:#eef6ff; }
+
+.cc-table tfoot td{
+  padding:12px 10px;
+  background:#fcfcfd; border-top:1px solid var(--cc-border);
+}
+.strong{ font-weight:700; }
+.empty{ text-align:center; color:var(--cc-muted); padding:18px; }
+
+/* skeleton */
+.skeleton td span{
+  display:inline-block; width:100%; height:12px;
+  background: linear-gradient(90deg, #f2f4f7 25%, #eceff3 37%, #f2f4f7 63%);
+  background-size: 400% 100%;
+  border-radius:6px; animation: cc-shimmer 1.2s infinite;
+}
+.skeleton td:nth-child(1) span{ height:14px; }
+.skeleton td.num span{ width:70px; float:right; }
+@keyframes cc-shimmer{ 0%{background-position:100% 0} 100%{background-position:0 0} }
+
+/* responsive */
+@media (max-width: 900px){
+  .cc-filters{ grid-template-columns: 1fr; }
+  .span-3{ grid-column:auto; }
+}
+
+
+/* errores inline */
+.cc-error {
+  color: #e11d48;           /* rojo */
+  font-size: .85rem;
+  margin-top: .25rem;
+}
+
+.cc-error-global {
+  background: #fee2e2;
+  border: 1px solid #ef4444;
+  color: #7f1d1d;
+  padding: .5rem .75rem;
+  border-radius: .5rem;
+  margin-bottom: .75rem;
+}
+
+/* borde rojo en inputs inválidos */
+.cc-field select.invalid,
+.cc-field input.invalid {
+  border-color: #ef4444 !important;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(239,68,68,.15);
+}
+
+
+/* ---- RESET del nativo para estos botones ---- */
+.btn-nike, .btn-nike--green {
+  appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  background: none;
+}
+
+/* Contenedor de acciones */
+.cc-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Botón estilo Nike base (oscuro + borde volt) */
+.btn-nike{
+  --bg: #0f0f10;
+  --volt: #b8ff00;
+  --fg: #ffffff;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .6rem;
+  padding: .85rem 1.4rem;
+  border-radius: 999px;
+  border: 2px solid var(--volt);
+  background: linear-gradient(90deg, var(--bg) 0%, #17181a 100%);
+  color: var(--fg);
+  font-weight: 700;
+  letter-spacing: .2px;
+  cursor: pointer;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(184,255,0,.20), inset 0 0 0 0 rgba(184,255,0,.25);
+  transition: transform .18s ease, box-shadow .25s ease, background .25s ease;
+}
+
+.btn-nike::after{
+  content: "";
+  position: absolute;
+  inset: -20% auto -20% -30%;
+  width: 30%;
+  background: linear-gradient(120deg, transparent 0 40%, rgba(255,255,255,.28) 50%, transparent 60% 100%);
+  transform: skewX(-20deg);
+  transition: transform .45s ease, left .45s ease;
+  pointer-events: none;
+}
+
+.btn-nike:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 10px 26px rgba(184,255,0,.28), inset 0 0 0 2px rgba(184,255,0,.35);
+}
+.btn-nike:hover::after{ left: 130%; }
+
+.btn-nike:active{ transform: translateY(0); }
+.btn-nike:focus-visible{ outline: 3px solid rgba(184,255,0,.6); outline-offset: 3px; }
+
+.btn-nike[disabled], .btn-nike.is-disabled{
+  opacity: .55; cursor: not-allowed; transform: none; box-shadow: none;
+}
+
+/* Variante verde para el botón "Ver" */
+.btn-nike--green{
+  color-scheme: btn-nike; /* si no usas PostCSS, copia las reglas de .btn-nike aquí */
+  --bg: #0dbf8f;       /* fondo verde */
+  --volt: #00e19a;     /* borde/halo verde claro */
+  background: linear-gradient(90deg, #08b083 0%, #0aa57d 100%);
+  border-color: var(--volt);
+}

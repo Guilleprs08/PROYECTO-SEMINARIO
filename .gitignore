@@ -1,0 +1,28 @@
+# Node / JS
+node_modules/
+dist/
+build/
+.vite/
+.next/
+*.log
+npm-debug.log*
+
+# VSCode
+.vscode/
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Entornos
+.env
+.env.local
+.env.*.local
+
+# Producción / artefactos
+coverage/
+tmp/
+
+# Secretos
+backend-movieflow/src/config/firebaseServiceAccount.json
+backend-movieflow/src/config/firebaseServiceAccount*.json

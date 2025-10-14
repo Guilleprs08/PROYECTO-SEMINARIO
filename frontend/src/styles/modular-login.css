@@ -1,0 +1,371 @@
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body, html, #root {
+  height: 100%;
+  display: flex;
+  justify-content: center;  /* Centra horizontal */
+  align-items: center;      /* Centra vertical */
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #ededf0 0%, #f4f3f6 100%);
+}
+
+
+/* Contenedor principal */
+.login-container {
+  display: flex;
+  width: 720px;
+  min-height: 600px;
+  border-radius: 20px;
+  box-shadow: 0 25px 45px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  margin: 40px auto;
+}
+
+/* Sección formulario */
+.login-form-section {
+  flex: 1;
+  background: white;
+  padding: 60px 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.login-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #222;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Inputs */
+.form-floating {
+  margin-bottom: 20px;
+}
+
+.form-floating > .form-control {
+  width: 100%;
+  padding: 18px 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 15px;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.95);
+  transition: all 0.3s ease;
+}
+
+.form-floating > .form-control:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+  background: white;
+}
+
+.form-floating > label {
+  color: #666;
+  font-weight: 500;
+}
+
+/* Checkbox */
+.form-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 30px;
+  font-size: 0.9rem;
+}
+
+/* Botón */
+.btn-login {
+  width: 100%;
+  padding: 18px;
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  color: white;
+  font-weight: 600;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 8px 15px rgba(102, 126, 234, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.btn-login:hover {
+  background: linear-gradient(45deg, #5a67d8, #6b46c1);
+  box-shadow: 0 12px 25px rgba(102, 126, 234, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Link olvidaste contraseña */
+.forgot-password {
+  margin-top: 15px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: #667eea;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+/* Divider */
+.divider {
+  position: relative;
+  text-align: center;
+  color: #666;
+  margin: 30px 0 20px;
+}
+
+.divider::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #ddd;
+  z-index: 1;
+}
+
+.divider span {
+  background: white;
+  padding: 0 20px;
+  position: relative;
+  z-index: 2;
+}
+
+/* Botón social */
+.social-login {
+  display: flex;
+  justify-content: center;
+  margin-top: 25px;
+}
+
+.social-btn {
+  border: 2px solid #e0e0e0;
+  border-radius: 15px;
+  padding: 12px 18px;
+  background: white;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.social-btn:hover {
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Sección derecha - marca */
+.brand-section {
+  flex: 1;
+  background: linear-gradient(45deg, #ff6b6b, #ee5a24, #ffa502);
+  background-size: 300% 300%;
+  animation: gradientShift 6s ease infinite;
+  color: white;
+  padding: 60px 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.brand-section::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(255, 255, 255, 0.05) 10px,
+    rgba(255, 255, 255, 0.05) 20px
+  );
+  animation: movePattern 20s linear infinite;
+}
+
+@keyframes movePattern {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+.cinema-logo {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  animation: pulse 2s ease-in-out infinite alternate;
+  position: relative;
+  z-index: 2;
+}
+
+@keyframes pulse {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.1);
+  }
+}
+
+.brand-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  letter-spacing: 2px;
+  position: relative;
+  z-index: 2;
+}
+
+.brand-subtitle {
+  font-size: 1.2rem;
+  font-weight: 300;
+  opacity: 0.9;
+  margin-bottom: 30px;
+  position: relative;
+  z-index: 2;
+}
+
+.brand-section ul {
+  list-style: none;
+  padding: 0;
+  font-size: 1rem;
+  text-align: left;
+  width: 100%;
+  max-width: 320px;
+}
+
+.brand-section li {
+  margin-bottom: 10px;
+}
+
+/* =========================
+   Íconos flotantes en la marca
+========================= */
+.floating-elements {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.floating-elements i {
+  position: absolute;
+  color: rgba(255, 255, 255, 0.2);
+  animation: float 6s ease-in-out infinite;
+}
+
+.floating-elements i:nth-child(1) {
+  top: 20%;
+  left: 10%;
+  font-size: 2rem;
+  animation-delay: 0s;
+}
+
+.floating-elements i:nth-child(2) {
+  top: 60%;
+  right: 15%;
+  font-size: 1.5rem;
+  animation-delay: 2s;
+}
+
+.floating-elements i:nth-child(3) {
+  bottom: 20%;
+  left: 20%;
+  font-size: 1.8rem;
+  animation-delay: 4s;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+  }
+}
+
+/* =========================
+   Responsivo
+========================= */
+@media (max-width: 768px) {
+  .login-container {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .login-form-section,
+  .brand-section {
+    padding: 40px 30px;
+  }
+
+  .brand-title {
+    font-size: 2.5rem;
+  }
+
+  .cinema-logo {
+    font-size: 3rem;
+  }
+}
+
+/* Posicionamiento de alertas en esquina superior derecha */
+.custom-alert {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1055;
+}
+
+.fixed-alert {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  background-color: #dc3545; /* rojo alerta */
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  z-index: 1055;
+  max-width: 300px;
+  font-weight: 600;
+} 

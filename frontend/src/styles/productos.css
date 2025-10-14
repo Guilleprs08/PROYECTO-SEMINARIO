@@ -1,0 +1,119 @@
+/* Caja punteada de acción */
+.add-box {
+  background: #fbfbff;
+  border: 2px dashed #635bff;
+  color: #4a46b1;
+  border-radius: 12px;
+  padding: 56px 20px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  transition: box-shadow .2s ease, transform .06s ease, background .2s ease;
+}
+
+.add-box:hover {
+  background: #f6f6ff;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+}
+
+.add-box:active {
+  transform: scale(0.995);
+}
+
+.plus-icon {
+  display: inline-block;
+  margin-bottom: 8px;
+  line-height: 1;
+}
+
+/* Ajustes sutiles a labels */
+.form-label {
+  color: #1f2a44;
+}
+
+/* Estados dinámicos */
+.estado-badge {
+  display: inline-block;
+  margin: 4px 6px 4px 0;  
+  padding: 0.4em 0.8em;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 12px;
+  color: #fff;
+  white-space: nowrap; /* evita que se parta en dos líneas */
+}
+
+/* Colores personalizados por estado */
+.estado-badge.disponible {
+  background-color: #28a745; /* Verde */
+}
+
+.estado-badge.stock_bajo {
+  background-color: #fd7e14; /* Naranja */
+}
+
+.estado-badge.por_vencer {
+  background-color: #e9d494; /* Amarillo */
+  color: #000; /* texto oscuro */
+}
+
+.estado-badge.vencido {
+  background-color: #dc3545; /* Rojo */
+}
+
+.estado-badge.bloqueado {
+  background-color: #6c757d; /* Gris */
+}
+
+/* 📌 Contenedor de filtros */
+.filtros-container {
+  display: flex;
+  flex-wrap: wrap;        /* Si no caben, pasan a la siguiente fila */
+  gap: 10px;              /* Espaciado entre filtros */
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+/* 📌 Campo de búsqueda reducido */
+.filtro-busqueda {
+  flex: 1 1 250px;        /* ancho mínimo */
+  max-width: 300px;       /* ancho máximo */
+}
+
+.filtro-busqueda input {
+  border: 1px solid #db8f8f;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  padding: 6px 10px;
+  font-size: 0.9rem;
+  color: #333;
+  outline: none;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.filtro-busqueda input:focus {
+  border-color: #c7a3a3;
+  background-color: #fff;
+}
+
+/* 📌 Ajuste de selects */
+.filtro-select {
+  height: 38px;
+  width: auto;            /* ancho se adapta al texto */
+  min-width: fit-content; /* ancho mínimo al contenido */
+  flex: 0 0 auto;         /* evita que se estire */
+  display: inline-block;
+  border: 1px solid #db8f8f;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  padding: 6px 10px;
+  font-size: 0.9rem;
+  color: #333;
+  outline: none;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.filtro-select:focus {
+  border-color: #c7a3a3;
+  background-color: #fff;
+}

@@ -1,0 +1,146 @@
+.apertura-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+/* Menú superior */
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.tab {
+  background: #f1f1f1;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 6px 6px 0 0;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.tab:hover {
+  background: #e0e0e0;
+}
+
+.tab.active {
+  background: #007bff;
+  color: white;
+}
+
+/* Alerta */
+.alert {
+  background: #eaf4ff;
+  border-left: 4px solid #007bff;
+  padding: 10px;
+  margin-bottom: 20px;
+  color: #003d80;
+  border-radius: 4px;
+}
+
+/* Layout */
+.content {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start; /* 🔹 alinear arriba */
+  flex-wrap: wrap;
+}
+
+/* Card base */
+.card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  background: #f8f9fa;
+  font-weight: bold;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.card-body {
+  padding: 15px;
+}
+
+/* Información General */
+.card.info-general {
+  flex: 0 0 auto;
+  width: 320px; /* ancho fijo */
+  height: auto; /* ajusta a contenido */
+}
+
+/* Conteo de efectivo */
+.card.conteo {
+  flex: 1;
+  min-width: 400px;
+}
+
+/* Formularios */
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-label {
+  font-weight: bold;
+}
+
+.form-select,
+.form-input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* Tabla */
+.table {
+  margin-top: 10px;
+}
+
+.table th,
+.table td {
+  vertical-align: middle;
+  text-align: center;
+}
+
+/* Total */
+.total-box {
+  margin-top: 15px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.8rem;
+  color: #fff;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+
+.btn-apertura {
+  width: 100%;
+  padding: 10px;
+  margin-top: 15px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: white;
+  background: linear-gradient(135deg, #28a745, #218838);
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.2s ease;
+}
+
+.btn-apertura:hover {
+  background: linear-gradient(135deg, #218838, #1e7e34);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.btn-apertura:active {
+  transform: scale(0.98);
+}

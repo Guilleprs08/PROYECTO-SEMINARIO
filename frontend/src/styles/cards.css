@@ -1,0 +1,43 @@
+/* Tarjeta base */
+.stat-card {
+  padding: 20px;
+  border-radius: 12px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  min-height: 120px;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.stat-icon {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Colores personalizados */
+.stat-blue {
+  background-color: #0d6efd;
+}
+
+.stat-green {
+  background-color: #198754;
+}
+
+.stat-yellow {
+  background-color: #ffc107;
+  color: #000;
+}
+
+.stat-gradient {
+  background: linear-gradient(135deg, #65645e, #FFA500);
+}
