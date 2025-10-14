@@ -1,28 +1,4 @@
-# Node / JS
-node_modules/
-dist/
-build/
-.vite/
-.next/
-*.log
-npm-debug.log*
-
-# VSCode
-.vscode/
-
-# Sistema
-.DS_Store
-Thumbs.db
-
-# Entornos
-.env
-.env.local
-.env.*.local
-
-# Producción / artefactos
-coverage/
-tmp/
-
-# Secretos
-backend-movieflow/src/config/firebaseServiceAccount.json
-backend-movieflow/src/config/firebaseServiceAccount*.json
+# En la raíz del repo
+echo backend-movieflow/src/config/firebaseServiceAccount.json> .gitignore
+echo .env>> .gitignore
+echo .env.*>> .gitignore
