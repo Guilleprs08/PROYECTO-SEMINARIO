@@ -86,6 +86,12 @@ const pdfInicioAperturaRoutes = require('./src/routes/pdf/inicioaperturaCaja.rou
 
 // === NUEVO: Ticket PDF (ventas) ===
 const ticketPDFRoutes = require('./src/routes/ventas/ticketpdf.routes');
+const passwordRoutes = require('./src/routes/recuperarcontrasena/recuperarContrasena.routes');
+const excelRoutes = require('./src/routes/excel/detallesVentas.routes');
+const pdfRouter = require('./src/routes/pdf/pdf.routes');
+const reportesSalasRouter = require('./src/routes/graficasReportes.routes');
+const reportesDeSalaExcelRoutes = require("./src/routes/excel/ReportesDeSala.routes");
+const reportesRoutes = require('./src/routes/reportes.routes');
 
 // --- verifica que cada require sea un Router (función)
 [
@@ -188,6 +194,12 @@ app.use('/api/pdf', pdfInicioAperturaRoutes);
 
 // === Ticket PDF (ventas)
 app.use('/api/ticket-pdf', ticketPDFRoutes);
+app.use('/password', passwordRoutes); 
+app.use('/api/excel', excelRoutes);
+app.use('/api/reportes-salas', reportesSalasRouter);
+app.use('/api/pdf', pdfRouter);
+app.use("/api/excel", reportesDeSalaExcelRoutes);
+app.use('/api', reportesRoutes);
 
 /* =========================================================
    ENDPOINTS DE APOYO PARA DASHBOARD (COMPRAS / ENTRADAS)

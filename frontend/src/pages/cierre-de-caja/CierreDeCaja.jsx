@@ -20,16 +20,61 @@ const CierredeCaja = () => {
     monto_apertura: 0,
     total_ventas: 0,
     monto_esperado: 0,
-    id_apertura: null
+    id_apertura: null,
   });
   const [errorCaja, setErrorCaja] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // 🔹 NUEVO: estado para modal y payload pendiente
+  // 🔹 Modal y payload pendiente
   const [showAdminModal, setShowAdminModal] = useState(false);
   const [payloadCierrePendiente, setPayloadCierrePendiente] = useState(null);
 
-  // 🔹 Cargar denominaciones y caja abierta
+  // ========= Helpers para verificar admin por BD (sin JWT) =========
+  const candidates = [
+    "/api/auth/verify-admin",
+    "/api/empleados/verify-admin",
+    "/api/admin/verify",
+  ];
+
+  const normalizeAdmin = (raw) => {
+    if (!raw) return null;
+    const a = raw.admin || raw.user || raw.usuario || raw;
+    return {
+      id: a?.id || a?.ID || a?.id_usuario || a?.ID_USUARIO || null,
+      usuario: a?.usuario || a?.USERNAME || a?.name || a?.NAME || "",
+      rol: a?.rol || a?.role || a?.ROL || a?.ROLE || "",
+      role_id: a?.role_id || a?.ROL_ID || a?.id_rol || null,
+      ...a,
+    };
+  };
+
+  const tryVerifyAdminById = async (userId) => {
+    try {
+      if (!userId) return null;
+      const payload = { user_id: userId }; // el backend valida en USUARIOS/ROLES
+      for (const path of candidates) {
+        try {
+          const { data } = await axios.post(`${API_BASE}${path}`, payload, {
+            headers: { "Content-Type": "application/json" },
+          });
+          const ok =
+            data?.ok === true ||
+            data?.success === true ||
+            !!data?.admin ||
+            !!data?.user ||
+            !!data?.usuario;
+          if (ok) return normalizeAdmin(data);
+        } catch {
+          // probar con el siguiente endpoint candidato
+        }
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  };
+
+  // ========= Cargar denominaciones y caja abierta =========
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -39,7 +84,7 @@ const CierredeCaja = () => {
 
         if (!userData?.id) return;
 
-        // 🔹 Cargar denominaciones
+        // Denominaciones
         try {
           const resDenoms = await axios.get(`${API_BASE}/api/ventas/denominaciones`);
           const inicial = {};
@@ -53,12 +98,12 @@ const CierredeCaja = () => {
           toast.error("❌ Error al cargar denominaciones");
         }
 
-        // 🔹 Cargar caja abierta
+        // Caja abierta
         try {
           const resCaja = await axios.get(`${API_BASE}/api/cierredelascajas/cajas-abiertas`, {
-            params: { usuario_id: userData.id }
+            params: { usuario_id: userData.id },
           });
-          setCajaAbierta(resCaja.data || null); // ✅ ahora objeto
+          setCajaAbierta(resCaja.data || null); // objeto con { id_apertura, nombre_caja, ... }
         } catch (err) {
           console.error("❌ Error al cargar caja abierta:", err);
         }
@@ -70,7 +115,7 @@ const CierredeCaja = () => {
     fetchData();
   }, []);
 
-  // 🔹 Manejar selección de caja
+  // ========= UI / Cálculos =========
   const handleCajaSelect = async (id_apertura) => {
     if (!id_apertura) {
       setInfoCierre({
@@ -81,7 +126,7 @@ const CierredeCaja = () => {
         monto_apertura: 0,
         total_ventas: 0,
         monto_esperado: 0,
-        id_apertura: null
+        id_apertura: null,
       });
       return;
     }
@@ -92,7 +137,7 @@ const CierredeCaja = () => {
         JSON.parse(sessionStorage.getItem("userData"));
 
       const res = await axios.get(`${API_BASE}/api/cierredelascajas/info`, {
-        params: { usuario_id: userData.id, id_apertura }
+        params: { usuario_id: userData.id, id_apertura },
       });
 
       if (res.data.abierta) {
@@ -104,7 +149,7 @@ const CierredeCaja = () => {
           monto_apertura: res.data.monto_apertura,
           total_ventas: res.data.total_ventas,
           monto_esperado: res.data.monto_esperado,
-          id_apertura: res.data.id_apertura
+          id_apertura: res.data.id_apertura,
         });
         setErrorCaja("");
       }
@@ -114,7 +159,6 @@ const CierredeCaja = () => {
     }
   };
 
-  // 🔹 Manejar cantidad ingresada
   const handleCantidadChange = (id, value) => {
     setCantidades((prev) => ({
       ...prev,
@@ -122,7 +166,6 @@ const CierredeCaja = () => {
     }));
   };
 
-  // 🔹 Calcular subtotales y total contado
   const calcularSubtotal = (id, valor) => {
     const cantidad = cantidades[id] || 0;
     return cantidad * valor;
@@ -135,7 +178,7 @@ const CierredeCaja = () => {
     0
   );
 
-  // 🔹 Manejar cierre de caja (mantenemos tu confirmación, pero ya no se postea directo)
+  // ========= Cerrar caja (confirmación → fast-path admin → modal si hace falta → POST real) =========
   const handleCerrarCaja = async () => {
     const userData =
       JSON.parse(localStorage.getItem("userData")) ||
@@ -149,7 +192,7 @@ const CierredeCaja = () => {
 
     const denominacionesArray = Object.entries(cantidades).map(([id, cantidad]) => ({
       denominacion_id: parseInt(id),
-      cantidad
+      cantidad,
     }));
 
     const totalCantidad = denominacionesArray.reduce((acc, d) => acc + d.cantidad, 0);
@@ -175,19 +218,28 @@ const CierredeCaja = () => {
       text: `Se cerrará la caja con Q${totalContado}.`,
       confirmButtonText: "Sí, cerrar",
       onConfirm: async () => {
-        // 👇 En vez de enviar al backend aquí, abrimos el modal y dejamos listo el payload
+        // Guardar payload
         setPayloadCierrePendiente({
           usuario_id: userData.id,
           apertura_id: infoCierre.id_apertura,
           observaciones: observaciones || null,
-          denominaciones: denominacionesArray
+          denominaciones: denominacionesArray,
         });
-        setShowAdminModal(true);
+
+        // FAST-PATH: consultar a BD si el usuario actual ya es admin activo
+        const adminInfo = await tryVerifyAdminById(userData.id);
+        if (adminInfo?.id) {
+          // Auto-autoriza sin pedir contraseña
+          await onAdminConfirmado(adminInfo);
+        } else {
+          // No admin → mostrar modal para credenciales
+          setShowAdminModal(true);
+        }
       },
     });
   };
 
-  // 🔹 Cuando el admin se verifica OK en el modal, aquí sí enviamos el cierre
+  // Cuando el admin se verifica (fast-path o modal), enviar el cierre
   const onAdminConfirmado = async (adminInfo) => {
     setShowAdminModal(false);
     if (!payloadCierrePendiente) return;
@@ -198,11 +250,15 @@ const CierredeCaja = () => {
         admin_id: adminInfo?.id || null, // quién autorizó
       });
 
-      // ✅ Mensaje con ticket si viene en la respuesta
-      const ticketMsg = res.data.numero_ticket ? ` (Ticket ${res.data.numero_ticket})` : "";
-      toast.success(res.data.message || `✅ Caja cerrada correctamente${ticketMsg}`);
+      // ✅ Sólo número de ticket si viene; si no, message; si no, nada.
+      const ticket = res.data?.numero_ticket;
+      if (ticket) {
+        toast.success(`Ticket ${ticket}`);
+      } else if (res.data?.message) {
+        toast.success(res.data.message || "✅ Caja cerrada correctamente");
+      }
 
-      // ✅ Abrir PDF de CORTE automáticamente (después de validación admin)
+      // Abrir PDF de CORTE automáticamente
       if (res.data.cierre_id) {
         window.open(`${API_BASE}/api/pdf/corte-caja/${res.data.cierre_id}`, "_blank");
       }
@@ -223,7 +279,7 @@ const CierredeCaja = () => {
         monto_apertura: 0,
         total_ventas: 0,
         monto_esperado: 0,
-        id_apertura: null
+        id_apertura: null,
       });
 
       setCajaAbierta(null);
@@ -344,11 +400,12 @@ const CierredeCaja = () => {
             <button onClick={handleCerrarCaja}>Cerrar Caja</button>
           </div>
 
-          {/* 🔒 Modal de verificación de Administrador */}
+          {/* 🔒 Modal de verificación de Administrador (silenciado) */}
           <VerificarAdmin
             open={showAdminModal}
             onClose={() => setShowAdminModal(false)}
             onSuccess={onAdminConfirmado}
+            quiet
           />
         </>
       )}

@@ -29,8 +29,9 @@ const post = (path, data = {}, cfg = {}) =>
  *  - open: boolean
  *  - onClose: () => void
  *  - onSuccess: (adminInfo) => void  // { id, usuario, rol, role_id, ... }
+ *  - quiet?: boolean                 // si true, NO muestra toast de "Administrador verificado."
  */
-export default function VerificarAdmin({ open, onClose, onSuccess }) {
+export default function VerificarAdmin({ open, onClose, onSuccess, quiet = false }) {
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -71,7 +72,7 @@ export default function VerificarAdmin({ open, onClose, onSuccess }) {
     ];
     const payload = {
       username: u,
-      usuario: u, // por compatibilidad con controladores que esperan 'usuario'
+      usuario: u, // compat con controladores que esperan 'usuario'
       password: p,
     };
 
@@ -132,7 +133,11 @@ export default function VerificarAdmin({ open, onClose, onSuccess }) {
         toast.warn("Administrador verificado, pero no se obtuvo ID de usuario.");
       }
 
-      toast.success("Administrador verificado.");
+      // 🔇 Silenciar toast de éxito si 'quiet' es true
+      if (!quiet) {
+        toast.success("Administrador verificado.");
+      }
+
       onSuccess?.(adminInfo);
     } catch (err) {
       const msg =

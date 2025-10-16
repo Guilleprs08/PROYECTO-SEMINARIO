@@ -1,6 +1,6 @@
 // src/App.jsx
 import React, { useContext } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthContext, AuthProvider } from './contexts/AuthContext';
 import './styles/fonts.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -21,6 +21,13 @@ import MisPedidosSnacks from './pages/MisPedidosSnacks';
 // 👇 NUEVO: Panel de caja para snacks (empleados/admin)
 import SnacksCaja from './pages/SnacksCaja';
 
+// 👇 NUEVO: Ruta para primer cambio de contraseña
+import ActualizarContrasena from './pages/actualizarcontrasena/actualizarContrasena';
+
+// ⬇️ NUEVO: Vistas públicas para recuperación de contraseña
+import RecuperacionDeContrasena from './pages/recuperacion de contrasena/recuperaciondeContrasena';
+import ValidacionDeCodigo from './pages/recuperacion de contrasena/validaciondeCodigo';
+
 /* ================= Helpers de roles/rutas ================= */
 const isClient = (u) => {
   const roleName = String(u?.rol_nombre || u?.role || '').toUpperCase();
@@ -36,20 +43,38 @@ const defaultAfterLoginRoute = (u) => (isClient(u) ? '/bienvenida-cliente' : '/d
 /* ================= Guards ================= */
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useContext(AuthContext);
+  const location = useLocation(); // 👈 agregado para permitir /actualizarcontrasena
   if (loading) return <div>Cargando...</div>;
-  return user ? children : <Navigate to="/login" replace />;
+  if (!user) return <Navigate to="/login" replace />;
+
+  // ⬇️ Lógica solicitada: si es primer login, forzar a /actualizarcontrasena (pero permitir si ya estás ahí)
+  const esPrimer = user?.es_primer_login ?? user?.esPrimerLogin ?? false;
+  if (esPrimer && location.pathname !== '/actualizarcontrasena') {
+    return <Navigate to="/actualizarcontrasena" replace />;
+  }
+
+  return children;
 };
 
 const PublicRoute = ({ children }) => {
   const { user, loading } = useContext(AuthContext);
   if (loading) return <div>Cargando...</div>;
-  return !user ? children : <Navigate to={defaultAfterLoginRoute(user)} replace />;
+  if (!user) return children;
+
+  // ⬇️ Si ya hay sesión, decidir destino según primer login
+  const esPrimer = user?.es_primer_login ?? user?.esPrimerLogin ?? false;
+  return <Navigate to={esPrimer ? '/actualizarcontrasena' : defaultAfterLoginRoute(user)} replace />;
 };
 
 const ClientRoute = ({ children }) => {
   const { user, loading } = useContext(AuthContext);
   if (loading) return <div>Cargando...</div>;
   if (!user) return <Navigate to="/login" replace />;
+
+  // ⬇️ Bloqueo por primer login
+  const esPrimer = user?.es_primer_login ?? user?.esPrimerLogin ?? false;
+  if (esPrimer) return <Navigate to="/actualizarcontrasena" replace />;
+
   return isClient(user) ? children : <Navigate to="/dashboard" replace />;
 };
 
@@ -58,13 +83,22 @@ const AdminRoute = ({ children }) => {
   const { user, loading } = useContext(AuthContext);
   if (loading) return <div>Cargando...</div>;
   if (!user) return <Navigate to="/login" replace />;
+
+  // ⬇️ Bloqueo por primer login
+  const esPrimer = user?.es_primer_login ?? user?.esPrimerLogin ?? false;
+  if (esPrimer) return <Navigate to="/actualizarcontrasena" replace />;
+
   return !isClient(user) ? children : <Navigate to="/bienvenida-cliente" replace />;
 };
 
 const HomeRedirect = () => {
   const { user, loading } = useContext(AuthContext);
   if (loading) return <div>Cargando...</div>;
-  const to = user ? defaultAfterLoginRoute(user) : '/login';
+  if (!user) return <Navigate to="/login" replace />;
+
+  // ⬇️ Redirección por primer login
+  const esPrimer = user?.es_primer_login ?? user?.esPrimerLogin ?? false;
+  const to = esPrimer ? '/actualizarcontrasena' : defaultAfterLoginRoute(user);
   return <Navigate to={to} replace />;
 };
 
@@ -80,6 +114,34 @@ function App() {
             <PublicRoute>
               <Login />
             </PublicRoute>
+          }
+        />
+
+        {/* ⬇️ NUEVO: Recuperación de contraseña (públicas) */}
+        <Route
+          path="/recuperar"
+          element={
+            <PublicRoute>
+              <RecuperacionDeContrasena />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/validacion-codigo"
+          element={
+            <PublicRoute>
+              <ValidacionDeCodigo />
+            </PublicRoute>
+          }
+        />
+
+        {/* 👇 NUEVO: Primer cambio de contraseña (privado) */}
+        <Route
+          path="/actualizarcontrasena"
+          element={
+            <PrivateRoute>
+              <ActualizarContrasena />
+            </PrivateRoute>
           }
         />
 

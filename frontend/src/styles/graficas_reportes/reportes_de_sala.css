@@ -1,0 +1,141 @@
+:root{
+  --bg:#f5f7fb;
+  --card:#fff;
+  --border:#e6e8ef;
+  --txt:#111827;
+  --muted:#6b7280;
+  --primary:#6366f1; /* morado/azulado */
+  --primary-soft: rgba(99,102,241,.12);
+  --ok:#22c55e;
+  --warn:#f59e0b;
+  --bad:#ef4444;
+  --radius:14px;
+  --shadow:0 6px 16px rgba(16,24,40,.08);
+}
+
+.rds.container{
+  min-height:100%;
+  padding:18px !important;
+  background:var(--bg);
+  color:var(--txt);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+}
+
+/* --------- inputs / botones --------- */
+.rds .lbl{ display:block; font-size:12px; color:var(--muted); margin:0 0 6px; }
+.rds .inp{
+  height:38px; padding:0 10px; border:1px solid var(--border);
+  border-radius:10px; background:#fff; color:var(--txt);
+}
+.rds .btn{
+  height:38px; padding:0 14px; border:0; border-radius:10px;
+  background:var(--primary); color:#fff; cursor:pointer; box-shadow:var(--shadow);
+}
+.rds .btn:disabled{ opacity:.7; cursor:default; }
+
+/* --------- cards --------- */
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow: var(--shadow);
+}
+.card .card-head h3{ margin:0 0 8px; font-size:16px; font-weight:700; }
+
+/* --------- KPI --------- */
+.kpi-title{ font-size:12px; color:var(--muted); margin-bottom:6px; }
+.kpi-value{ font-size:28px; font-weight:800; line-height:1; margin-bottom:6px; }
+.kpi-sub{ font-size:12px; color:var(--muted); }
+
+/* --------- tabla --------- */
+.table-wrap{ width:100%; }
+.tbl{ width:100%; border-collapse:separate; border-spacing:0; font-size:14px; }
+.tbl thead th{
+  text-align:left; padding:12px; background:#fafbff; color:#475569;
+  border-bottom:1px solid var(--border); font-weight:700;
+}
+.tbl tbody td{
+  padding:12px; border-bottom:1px solid var(--border);
+  vertical-align:middle;
+}
+.tbl tbody tr:hover{ background:#fafbff; }
+
+/* --------- % ocupación barra --------- */
+.pct-cell{ display:flex; align-items:center; gap:10px; }
+.pct-cell .bar{
+  flex:1; height:10px; border-radius:999px; background:#eef0f6; overflow:hidden;
+  border:1px solid #e5e7eb;
+}
+.pct-cell .bar .fill{
+  height:100%; background:linear-gradient(90deg, var(--primary), #4f46e5);
+}
+.pct-cell .pct{ min-width:54px; font-size:12px; color:var(--muted); }
+
+/* --------- badges --------- */
+.badge{
+  display:inline-block; font-size:12px; padding:4px 10px; border-radius:999px;
+  background:#eef2ff; color:#4338ca; border:1px solid #c7d2fe;
+}
+.badge.alta{ background:rgba(34,197,94,.12); color:#166534; border-color:#86efac; }
+.badge.media{ background:rgba(245,158,11,.12); color:#7c2d12; border-color:#fcd34d; }
+.badge.baja{ background:rgba(239,68,68,.12); color:#7f1d1d; border-color:#fecaca; }
+
+/* --------- layout responsivo --------- */
+@media (max-width: 1200px){
+  .rds-kpis{ grid-template-columns:1fr 1fr !important; }
+  .rds-charts{ grid-template-columns:1fr !important; }
+}
+@media (max-width: 640px){
+  .rds-filtros{ flex-direction:column !important; }
+  .kpi-value{ font-size:24px; }
+}
+
+
+
+
+/* ===== Barra de acciones centrada ===== */
+.rds-actions{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:14px;
+  padding:10px 0 6px;
+  margin:4px 0 8px;
+  border-radius:12px;
+}
+
+/* ===== Botones de exportación ===== */
+.btn-export{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 16px;
+  border:none;
+  border-radius:8px;
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+  transition: transform .06s ease, box-shadow .15s ease, opacity .2s;
+  box-shadow: 0 2px 6px rgba(0,0,0,.15);
+}
+
+.btn-export .ico{ font-size:16px; line-height:1; }
+
+/* Rojo PDF */
+.btn-export.pdf{
+  background: linear-gradient(180deg, #e04b3f 0%, #c43a2f 100%);
+}
+.btn-export.pdf:hover{ filter: brightness(1.05); transform: translateY(-1px); }
+.btn-export.pdf:active{ transform: translateY(0); }
+
+/* Verde Excel */
+.btn-export.excel{
+  background: linear-gradient(180deg, #27a844 0%, #1f8f39 100%);
+}
+.btn-export.excel:hover{ filter: brightness(1.05); transform: translateY(-1px); }
+.btn-export.excel:active{ transform: translateY(0); }
+
+/* Responsive: apila si no hay espacio */
+@media (max-width: 640px){
+  .rds-actions{ flex-wrap:wrap; }
+}

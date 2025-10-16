@@ -1,23 +1,34 @@
-import React, { useState, useEffect } from 'react';
+// src/pages/RegistrarCategoria.jsx
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { FaPlus, FaTags, FaSave } from 'react-icons/fa';
+import '../styles/categorias.css';
 
 const API_BASE = import.meta.env?.VITE_API_BASE_URL || 'http://localhost:3001';
 
-const RegistrarCategoria = () => {
+export default function RegistrarCategoria() {
+  // ===== BD =====
+  const [categoriasBD, setCategoriasBD] = useState([]);
+  const [cargando, setCargando] = useState(false);
+
+  // ===== Form / temporales =====
   const [nombre, setNombre] = useState('');
   const [sinopsis, setSinopsis] = useState('');
-  const [categorias, setCategorias] = useState([]);
-  const [cargando, setCargando] = useState(false);
-  const [enviando, setEnviando] = useState(false);
+  const [nuevas, setNuevas] = useState([]); // [{codigo, nombre, sinopsis}]
+  const [guardando, setGuardando] = useState(false);
 
+  // ===== Buscador =====
+  const [busqueda, setBusqueda] = useState('');
+  const debounceRef = useRef(null);
+
+  // ---- Cargar BD ----
   const cargarCategorias = async () => {
     setCargando(true);
     try {
-      const res = await axios.get(`${API_BASE}/api/categorias`); // ⬅ sin withCredentials
-      setCategorias(Array.isArray(res.data) ? res.data : []);
+      const res = await axios.get(`${API_BASE}/api/categorias`);
+      setCategoriasBD(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
-      console.error('Error al cargar categorías:', err);
       const msg =
         err?.response?.data?.message ||
         (err?.request ? 'No se pudo conectar con el servidor' : err?.message) ||
@@ -27,143 +38,167 @@ const RegistrarCategoria = () => {
       setCargando(false);
     }
   };
+  useEffect(() => { cargarCategorias(); }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const valorNombre = (nombre || '').trim();
-    const valorSinopsis = (sinopsis || '').trim();
+  // ---- Helpers ----
+  const codigoLocal = useMemo(() => `CAT${String(nuevas.length + 1).padStart(3,'0')}`, [nuevas.length]);
 
-    if (!valorNombre) return toast.warn('Ingrese un nombre de categoría');
-    if (valorNombre.length > 80) return toast.warn('El nombre no debe superar 80 caracteres');
-    if (!valorSinopsis) return toast.warn('Ingrese una sinopsis para la categoría');
-    if (valorSinopsis.length > 500) return toast.warn('La sinopsis no debe superar 500 caracteres');
+  const nombresExistentes = useMemo(() => new Set(
+    [
+      ...categoriasBD.map(c => (c?.NOMBRE ?? c?.nombre ?? '').trim().toLowerCase()),
+      ...nuevas.map(c => (c?.nombre ?? '').trim().toLowerCase())
+    ].filter(Boolean)
+  ), [categoriasBD, nuevas]);
 
+  // ---- Acciones izquierda ----
+  const agregarTemporal = () => {
+    const n = (nombre||'').trim();
+    const s = (sinopsis||'').trim();
+    if (!n) return toast.warn('Ingrese un nombre de categoría');
+    if (n.length > 80) return toast.warn('El nombre no debe superar 80 caracteres');
+    if (!s) return toast.warn('Ingrese una sinopsis para la categoría');
+    if (s.length > 500) return toast.warn('La sinopsis no debe superar 500 caracteres');
+    if (nombresExistentes.has(n.toLowerCase())) return toast.info('Ya existe una categoría con ese nombre');
+
+    setNuevas(prev => [...prev, { codigo: codigoLocal, nombre: n, sinopsis: s }]);
+    setNombre(''); setSinopsis('');
+    toast.success('Categoría agregada');
+  };
+
+  const eliminarTemporal = (codigo) => {
+    setNuevas(prev => prev.filter(x => x.codigo !== codigo));
+  };
+
+  const guardarTodo = async () => {
+    if (nuevas.length === 0) return toast.info('No hay categorías nuevas para guardar');
     try {
-      setEnviando(true);
-      await axios.post(
-        `${API_BASE}/api/categorias`,
-        { nombre: valorNombre, sinopsis: valorSinopsis } // ⬅ sin withCredentials
-      );
-      toast.success('Categoría registrada correctamente');
-      setNombre('');
-      setSinopsis('');
+      setGuardando(true);
+      for (const cat of nuevas) {
+        await axios.post(`${API_BASE}/api/categorias`, { nombre: cat.nombre, sinopsis: cat.sinopsis });
+      }
+      toast.success('Categorías guardadas');
+      setNuevas([]);          // ⬅ se vacía => desaparecerá la tarjeta
       await cargarCategorias();
     } catch (err) {
-      console.error('Error al guardar categoría:', err);
       const msg =
         err?.response?.data?.message ||
         (err?.request ? 'No se pudo conectar con el servidor' : err?.message) ||
-        'No se pudo registrar la categoría';
+        'No se pudo guardar';
       toast.error(msg);
     } finally {
-      setEnviando(false);
+      setGuardando(false);
     }
   };
 
-  useEffect(() => {
-    cargarCategorias();
-  }, []);
+  // ---- Buscador ----
+  const onBuscar = (texto) => {
+    setBusqueda(texto);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      const q = (texto||'').trim().toLowerCase();
+      if (!q) { cargarCategorias(); return; }
+      setCategoriasBD(prev => prev.filter(cat => {
+        const n = (cat?.NOMBRE ?? cat?.nombre ?? '').toLowerCase();
+        const s = (cat?.SINOPSIS ?? cat?.sinopsis ?? '').toLowerCase();
+        const c = (cat?.CODIGO ?? cat?.codigo ?? '').toLowerCase();
+        return n.includes(q) || s.includes(q) || c.includes(q);
+      }));
+    }, 300);
+  };
 
   return (
-    <div className="container">
-      <div className="card shadow-sm border-0">
-        <div className="card-body">
-          <div className="d-flex align-items-center justify-content-between mb-3">
-            <h2 className="h5 m-0">Registrar Categoría</h2>
-          </div>
+    <div className="categorias-container categorias--tres">
+      {/* Izquierda */}
+      <div className="card agregar-categoria">
+        <h3><FaPlus /> Agregar Categoría de Películas</h3>
 
-          <form onSubmit={handleSubmit} className="row g-2 mb-4" autoComplete="off" noValidate>
-            <div className="col-12 col-md-8">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Nombre de la categoría"
-                value={nombre}
-                onChange={(e) => setNombre(e.target.value)}
-                maxLength={80}
-                required
-              />
-            </div>
-            <div className="col-12 col-md-4 d-grid">
-              <button
-                type="submit"
-                className="btn btn-primary"
-                disabled={enviando}
-                aria-busy={enviando}
-              >
-                {enviando ? 'Guardando...' : 'Guardar'}
-              </button>
-            </div>
+        <input
+          type="text"
+          placeholder="Ej: Acción, Suspenso, Comedia"
+          value={nombre}
+          onChange={(e) => setNombre(e.target.value)}
+          maxLength={80}
+          onKeyDown={(e) => e.key === 'Enter' && agregarTemporal()}
+        />
+        <textarea
+          placeholder="Sinopsis de la categoría (máx. 500)"
+          rows={4}
+          value={sinopsis}
+          onChange={(e) => setSinopsis(e.target.value)}
+          maxLength={500}
+          style={{ resize: 'none' }}
+        />
 
-            {/* Campo de sinopsis */}
-            <div className="col-12">
-              <textarea
-                className="form-control"
-                placeholder="Sinopsis de la categoría"
-                value={sinopsis}
-                onChange={(e) => setSinopsis(e.target.value)}
-                maxLength={500}
-                rows={4}
-                style={{ resize: 'none' }}
-                required
-              />
-              <div className="d-flex justify-content-between mt-1">
-                <small className="text-muted">Máximo 500 caracteres</small>
-                <small className="text-muted">{sinopsis.length}/500</small>
-              </div>
-            </div>
-          </form>
+        <div className="fila-acciones">
+          <button className="btn-azul" onClick={agregarTemporal}>
+            <FaTags /> Agregar Categoría
+          </button>
+          <button className="btn-verde" onClick={guardarTodo} disabled={guardando || nuevas.length===0}>
+            <FaSave /> {guardando ? 'Guardando...' : 'Guardar Todo'}
+          </button>
+        </div>
 
-          <div className="table-responsive">
-            <table className="table table-sm align-middle">
-              <thead className="table-light">
-                <tr>
-                  <th style={{ width: 120 }}>ID</th>
-                  <th style={{ width: 260 }}>Nombre</th>
-                  <th>Sinopsis</th>
-                </tr>
-              </thead>
-              <tbody>
-                {cargando ? (
-                  <tr>
-                    <td colSpan={3}>Cargando categorías...</td>
-                  </tr>
-                ) : categorias.length === 0 ? (
-                  <tr>
-                    <td colSpan={3}>Sin categorías registradas</td>
-                  </tr>
-                ) : (
-                  categorias.map((cat, i) => {
-                    const idVal = cat?.ID ?? cat?.id ?? i;
-                    const nombreVal = cat?.NOMBRE ?? cat?.nombre ?? '—';
-                    const sinVal = cat?.SINOPSIS ?? cat?.sinopsis ?? '—';
-                    return (
-                      <tr key={idVal}>
-                        <td>{idVal}</td>
-                        <td>{nombreVal}</td>
-                        <td
-                          title={typeof sinVal === 'string' ? sinVal : ''}
-                          style={{
-                            maxWidth: 420,
-                            whiteSpace: 'nowrap',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis'
-                          }}
-                        >
-                          {sinVal}
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
+        {/* Lista temporal dentro de la izquierda (opcional) */}
+        {/* Puedes quitar este bloque si no la quieres aquí */}
+      </div>
 
+      {/* Centro: registradas */}
+      <div className="card categorias-agregadas">
+        <div className="header-lista">
+          <h3>📄 Categorías Registradas</h3>
+          <span className="badge">{categoriasBD.length}</span>
+        </div>
+        <div className="buscador">
+          <input type="text" placeholder="Buscar categoría..." value={busqueda} onChange={(e)=>onBuscar(e.target.value)} />
+        </div>
+        <div className={`lista-categorias ${cargando ? 'is-loading' : ''}`}>
+          {cargando ? (
+            <div className="vacio">Cargando categorías...</div>
+          ) : categoriasBD.length === 0 ? (
+            <div className="vacio">Sin categorías registradas</div>
+          ) : (
+            categoriasBD.map((cat, i) => {
+              const idVal = cat?.ID ?? cat?.id ?? i;
+              const codigo = cat?.CODIGO ?? cat?.codigo ?? `ID-${idVal}`;
+              const nombreVal = cat?.NOMBRE ?? cat?.nombre ?? '—';
+              const sinVal = cat?.SINOPSIS ?? cat?.sinopsis ?? '—';
+              return (
+                <div className="item-categoria" key={idVal}>
+                  <div className="item-info">
+                    <FaTags /> <strong>{codigo}</strong>
+                    <p>{nombreVal}</p>
+                    <small className="muted" title={typeof sinVal === 'string' ? sinVal : ''}>{sinVal}</small>
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
       </div>
+
+      {/* Derecha: NUEVAS — se muestra SOLO si hay items */}
+      {nuevas.length > 0 && (
+        <div className="card categorias-agregadas">
+          <div className="header-lista">
+            <h3>🆕 Categorías Nuevas</h3>
+            <span className="badge">{nuevas.length}</span>
+          </div>
+          <div className="lista-categorias">
+            {nuevas.map(cat => (
+              <div className="item-categoria" key={cat.codigo}>
+                <div className="item-info">
+                  <FaTags /> <strong>{cat.codigo}</strong>
+                  <p>{cat.nombre}</p>
+                  <small className="muted">{cat.sinopsis}</small>
+                </div>
+                <button className="btn-rojo" onClick={() => eliminarTemporal(cat.codigo)}>
+                  Eliminar
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
-};
-
-export default RegistrarCategoria;
+}

@@ -1,0 +1,18 @@
+/* ===== Fila 50/50 contenedora (se mantiene) ===== */
+.dashboard-compact .charts-row-50{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  align-items: stretch;
+}
+
+@media (max-width: 1200px){
+  .dashboard-compact .charts-row-50{
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Evita desbordes dentro de las columnas 50/50 */
+.dashboard-compact .charts-row-50 > *{
+  min-width: 0;
+}

@@ -4,11 +4,10 @@
   --cc-border:#e9ecf1;
   --cc-txt:#1f2937;
   --cc-muted:#6b7280;
-  --cc-primary:#10b981;
-  --cc-primary-600:#059669;
   --cc-row:#fbfcfe;
 }
 
+/* ====== Página / encabezado ====== */
 .cc-page{
   padding:24px;
   background:var(--cc-bg);
@@ -19,23 +18,27 @@
 .cc-head h2{ margin:0 0 4px; font-size:26px; font-weight:700; }
 .cc-sub{ margin:0 0 16px; color:var(--cc-muted); }
 
+/* ====== Tarjetas ====== */
 .cc-card{
   background:var(--cc-card);
   border:1px solid var(--cc-border);
-  border-radius:14px;
+  border-radius:16px;
   box-shadow: 0 2px 10px rgba(16,24,40,.04);
-  padding:16px;
+  padding:18px;
   margin-bottom:16px;
 }
 
+/* ====== Filtros ====== */
 .cc-filters{
   display:grid;
   grid-template-columns: repeat(3, minmax(0,1fr));
   gap:12px;
   align-items:end;
 }
+.span-3{ grid-column:1 / -1; }
+
 .cc-field{ display:flex; flex-direction:column; gap:6px; }
-.cc-field label{ font-size:12px; color:var(--cc-muted); }
+.cc-field label{ font-size:12px; color:var(--cc-muted); letter-spacing:.3px; }
 .cc-field select,
 .cc-field input{
   height:40px; border:1px solid var(--cc-border);
@@ -43,16 +46,57 @@
 }
 .cc-field input:disabled{ background:#f3f4f6; color:#9ca3af; }
 
-.span-3{ grid-column:1 / -1; }
-
-.cc-actions{ grid-column:1 / -1; display:flex; gap:10px; }
-.btn-primary{
-  height:42px; padding:0 18px;
-  background:var(--cc-primary);
-  border:0; border-radius:10px; color:#fff; font-weight:600; cursor:pointer;
+/* ====== Acciones (botones tipo píldora) ====== */
+.cc-actions{
+  grid-column:1 / -1;
+  display:flex; gap:12px; align-items:center;
 }
-.btn-primary:hover{ background:var(--cc-primary-600); }
 
+/* Base NEGRA para PDF/Excel */
+.btn-pill{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  height:42px;
+  padding:0 18px;
+  border-radius:999px;
+
+  background:#0f0f10;       /* negro */
+  color:#ffffff;            /* texto blanco */
+  border:2px solid #a3ad7a; /* borde oliva suave */
+  box-shadow:0 2px 6px rgba(0,0,0,.20);
+
+  font-weight:700;
+  letter-spacing:.2px;
+  cursor:pointer;
+  transition: background .2s ease, box-shadow .2s ease, transform .1s ease, opacity .2s ease;
+}
+.btn-pill:hover{
+  background:#141416;       /* sigue negro en hover */
+  box-shadow:0 6px 16px rgba(0,0,0,.28), inset 0 0 0 2px rgba(163,173,122,.22);
+  transform: translateY(-1px);
+}
+.btn-pill:active{ transform: translateY(0); }
+.btn-pill:focus-visible{ outline:3px solid rgba(163,173,122,.45); outline-offset:3px; }
+.btn-pill.is-disabled,
+.btn-pill:disabled{ opacity:.55; cursor:not-allowed; transform:none; box-shadow:none; }
+
+/* Modificador VERDE SOLO para el botón "Ver" */
+.btn-pill--green{
+  background:#0aa57d;       /* verde */
+  border-color:#00e19a;     /* halo/contraste */
+  box-shadow:0 2px 10px rgba(0,225,154,.20);
+}
+.btn-pill--green:hover{
+  background:#089b74;
+  box-shadow:0 10px 22px rgba(0,225,154,.28), inset 0 0 0 2px rgba(0,225,154,.25);
+}
+.btn-pill--green:focus-visible{
+  outline:3px solid rgba(0,225,154,.45);
+  outline-offset:3px;
+}
+
+/* ====== Resultados / tabla ====== */
 .cc-results{ opacity:0; transform:translateY(6px); transition: all .25s ease; }
 .cc-results.show{ opacity:1; transform:translateY(0); }
 
@@ -66,9 +110,7 @@
   padding:12px 10px; text-align:left;
 }
 .cc-table th.num, .cc-table td.num{ text-align:right; white-space:nowrap; }
-.cc-table tbody td{
-  padding:12px 10px; border-bottom:1px solid #f1f5f9;
-}
+.cc-table tbody td{ padding:12px 10px; border-bottom:1px solid #f1f5f9; }
 .cc-table tbody tr:nth-child(odd){ background:var(--cc-row); }
 .cc-table tbody tr:hover{ background:#eef6ff; }
 
@@ -77,9 +119,11 @@
   background:#fcfcfd; border-top:1px solid var(--cc-border);
 }
 .strong{ font-weight:700; }
-.empty{ text-align:center; color:var(--cc-muted); padding:18px; }
 
-/* skeleton */
+.empty{ text-align:center; color:var(--cc-muted); padding:26px 10px; }
+.empty-sub{ font-size:.9rem; }
+
+/* ====== Skeleton ====== */
 .skeleton td span{
   display:inline-block; width:100%; height:12px;
   background: linear-gradient(90deg, #f2f4f7 25%, #eceff3 37%, #f2f4f7 63%);
@@ -90,107 +134,17 @@
 .skeleton td.num span{ width:70px; float:right; }
 @keyframes cc-shimmer{ 0%{background-position:100% 0} 100%{background-position:0 0} }
 
-/* responsive */
+/* ====== Errores ====== */
+.cc-error { color:#e11d48; font-size:.85rem; margin-top:.25rem; }
+.cc-field select.invalid,
+.cc-field input.invalid {
+  border-color:#ef4444 !important;
+  outline:none;
+  box-shadow:0 0 0 3px rgba(239,68,68,.15);
+}
+
+/* ====== Responsive ====== */
 @media (max-width: 900px){
   .cc-filters{ grid-template-columns: 1fr; }
   .span-3{ grid-column:auto; }
-}
-
-
-/* errores inline */
-.cc-error {
-  color: #e11d48;           /* rojo */
-  font-size: .85rem;
-  margin-top: .25rem;
-}
-
-.cc-error-global {
-  background: #fee2e2;
-  border: 1px solid #ef4444;
-  color: #7f1d1d;
-  padding: .5rem .75rem;
-  border-radius: .5rem;
-  margin-bottom: .75rem;
-}
-
-/* borde rojo en inputs inválidos */
-.cc-field select.invalid,
-.cc-field input.invalid {
-  border-color: #ef4444 !important;
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(239,68,68,.15);
-}
-
-
-/* ---- RESET del nativo para estos botones ---- */
-.btn-nike, .btn-nike--green {
-  appearance: none;
-  -webkit-appearance: none;
-  border: none;
-  background: none;
-}
-
-/* Contenedor de acciones */
-.cc-actions {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-
-/* Botón estilo Nike base (oscuro + borde volt) */
-.btn-nike{
-  --bg: #0f0f10;
-  --volt: #b8ff00;
-  --fg: #ffffff;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: .6rem;
-  padding: .85rem 1.4rem;
-  border-radius: 999px;
-  border: 2px solid var(--volt);
-  background: linear-gradient(90deg, var(--bg) 0%, #17181a 100%);
-  color: var(--fg);
-  font-weight: 700;
-  letter-spacing: .2px;
-  cursor: pointer;
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  box-shadow: 0 6px 18px rgba(184,255,0,.20), inset 0 0 0 0 rgba(184,255,0,.25);
-  transition: transform .18s ease, box-shadow .25s ease, background .25s ease;
-}
-
-.btn-nike::after{
-  content: "";
-  position: absolute;
-  inset: -20% auto -20% -30%;
-  width: 30%;
-  background: linear-gradient(120deg, transparent 0 40%, rgba(255,255,255,.28) 50%, transparent 60% 100%);
-  transform: skewX(-20deg);
-  transition: transform .45s ease, left .45s ease;
-  pointer-events: none;
-}
-
-.btn-nike:hover{
-  transform: translateY(-1px);
-  box-shadow: 0 10px 26px rgba(184,255,0,.28), inset 0 0 0 2px rgba(184,255,0,.35);
-}
-.btn-nike:hover::after{ left: 130%; }
-
-.btn-nike:active{ transform: translateY(0); }
-.btn-nike:focus-visible{ outline: 3px solid rgba(184,255,0,.6); outline-offset: 3px; }
-
-.btn-nike[disabled], .btn-nike.is-disabled{
-  opacity: .55; cursor: not-allowed; transform: none; box-shadow: none;
-}
-
-/* Variante verde para el botón "Ver" */
-.btn-nike--green{
-  color-scheme: btn-nike; /* si no usas PostCSS, copia las reglas de .btn-nike aquí */
-  --bg: #0dbf8f;       /* fondo verde */
-  --volt: #00e19a;     /* borde/halo verde claro */
-  background: linear-gradient(90deg, #08b083 0%, #0aa57d 100%);
-  border-color: var(--volt);
 }

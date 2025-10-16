@@ -1,8 +1,14 @@
+// routes/auth.routes.js
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/auth.controller');
 
-// Cambia la ruta POST a '/' para que quede POST /login en conjunto con app.use('/login', ...)
+// POST /login
+// Queda como lo tienes: app.use('/login', router) -> POST /login
 router.post('/', authController.login);
+
+// POST /login/primer-cambio
+// Endpoint para cambiar la contraseña en primer login (usa authController.cambiarPasswordPrimerLogin)
+router.post('/primer-cambio', authController.cambiarPasswordPrimerLogin);
 
 module.exports = router;

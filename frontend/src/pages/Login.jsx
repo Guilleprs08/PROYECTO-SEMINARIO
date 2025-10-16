@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { validarUsuario, validarContrasena } from '../utils/validations';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import { GoogleLogin } from '@react-oauth/google';
 import '../styles/modular-login.css';
@@ -19,28 +19,19 @@ const afterLoginRoute = (u) => (isClient(u) ? '/bienvenida-cliente' : '/dashboar
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [recordarme, setRecordarme] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [showStaffLogin, setShowStaffLogin] = useState(false);
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
 
+  // Limpia alertas
   useEffect(() => {
-    const recordado = localStorage.getItem('userData');
-    if (recordado) {
-      const user = JSON.parse(recordado);
-      setUsername(user.username || '');
-      setRecordarme(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (errorMsg) {
-      const t = setTimeout(() => setErrorMsg(''), 3000);
-      return () => clearTimeout(t);
-    }
+    if (!errorMsg) return;
+    const t = setTimeout(() => setErrorMsg(''), 3000);
+    return () => clearTimeout(t);
   }, [errorMsg]);
 
+  // === Login del personal (usuario/contraseña) ===
   const handleSubmit = async (e) => {
     e.preventDefault();
     const eU = validarUsuario(username);
@@ -48,37 +39,53 @@ const Login = () => {
     if (eU || eP) return setErrorMsg(eU || eP);
 
     try {
-      const { data } = await axios.post(`${API_BASE}/login`, { username, password });
-      const userData = { username, role_id: data.role_id, id: data.id, rol_nombre: data.rol_nombre };
+      // ⬇️ Enviar 'usuario' (no 'username')
+      const { data } = await axios.post(`${API_BASE}/login`, { usuario: username, password });
 
+      // Flag de primer login con fallback
+      const esPrimerLogin =
+        data?.es_primer_login ??
+        data?.esPrimerLogin ??
+        false;
+
+      // Construcción para el contexto
+      const userData = {
+        username,
+        id: data.id,
+        role_id: data.role_id,
+        rol_nombre: data.rol_nombre,
+        es_primer_login: esPrimerLogin,
+      };
+
+      // Persistimos token si viene (no forma parte de “recordarme”)
       if (data?.token) localStorage.setItem('mf_token', data.token);
-      if (data?.nombre || data?.name)
+
+      // Nombre visual (si viene)
+      if (data?.nombre || data?.name) {
         localStorage.setItem('mf_user', JSON.stringify({ nombre: data?.nombre || data?.name }));
-
-      login(userData);
-
-      if (recordarme) {
-        localStorage.setItem('userData', JSON.stringify(userData));
-        localStorage.setItem('usuario_id', data.id);
-        localStorage.setItem('rol_id', data.role_id);
-      } else {
-        sessionStorage.setItem('userData', JSON.stringify(userData));
-        sessionStorage.setItem('usuario_id', data.id);
-        sessionStorage.setItem('rol_id', data.role_id);
       }
-      localStorage.setItem('usuario_id', data.id);
-      localStorage.setItem('rol_id', data.role_id);
-      localStorage.setItem('adminId', data.id);
 
-      navigate(afterLoginRoute(userData), { replace: true });
+      // Context auth
+      await login(userData);
+
+      // Redirección según es_primer_login (lo trabajado)
+      if (esPrimerLogin) {
+        navigate('/actualizarcontrasena', { replace: true });
+      } else {
+        navigate('/dashboard', { replace: true });
+      }
     } catch (err) {
       setErrorMsg(err?.response?.data?.message || 'Error al conectar con el servidor.');
     }
   };
 
+  // === Login con Google (clientes externos) — SIN cambios fuera de alcance ===
   const handleGoogleSuccess = async (googleResponse) => {
     try {
-      const id_token = googleResponse?.credential || googleResponse?.idToken || googleResponse?.token;
+      const id_token =
+        googleResponse?.credential ||
+        googleResponse?.idToken ||
+        googleResponse?.token;
       if (!id_token) return setErrorMsg('ID Token requerido');
 
       const payload = { id_token, idToken: id_token, credential: id_token };
@@ -108,7 +115,9 @@ const Login = () => {
         );
       }
 
-      login({ id: data?.cliente?.id ?? null, role_id: 3, rol_nombre: 'CLIENTE', isClient: true });
+      const userData = { id: data?.cliente?.id ?? null, role_id: 3, rol_nombre: 'CLIENTE', isClient: true };
+      await login(userData);
+
       navigate('/bienvenida-cliente', { replace: true });
     } catch {
       setErrorMsg('No se pudo iniciar sesión con Google.');
@@ -118,7 +127,7 @@ const Login = () => {
 
   return (
     <>
-      {/* ==== SCROLL FIX + estilos responsivos (no tocan tu CSS global) ==== */}
+      {/* ==== Estilos “glass” locales ==== */}
       <style>{`
         :root, html, body, #root { height: 100%; min-height: 100%; overflow-y: auto !important; overflow-x: hidden; }
         body { margin: 0; }
@@ -175,7 +184,6 @@ const Login = () => {
         .pro-staff { margin-top:14px; text-align:left; font-size:13px; animation: slideDown .25s ease; width:100%; max-width:320px; }
         @keyframes slideDown { from {opacity:0; transform:translateY(-8px);} to{opacity:1; transform:translateY(0);} }
 
-        /* Panel Glass Branding */
         .pro-brand{
           position:relative; padding: clamp(28px, 5vw, 40px) 20px; color:#fff;
           background: rgba(255,255,255,0.08);
@@ -212,13 +220,15 @@ const Login = () => {
         @keyframes floatY{ 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(-18px) rotate(-2deg);} }
         @keyframes floatX{ 0%,100%{ transform: translateX(0);} 50%{ transform: translateX(18px) rotate(2deg);} }
 
-        /* Alert */
         .pro-alert{
           position: fixed; top:12px; left:50%; transform:translateX(-50%);
           background:#fee2e2; color:#7f1d1d; border:1px solid #fecaca;
           padding:10px 14px; border-radius:12px; z-index: 10; font-weight:700;
           box-shadow:0 10px 24px rgba(0,0,0,.2);
         }
+
+        .pro-forgot { margin-top: 10px; text-align: right; }
+        .pro-forgot a { color:#c7d2fe; text-decoration: underline; font-weight: 700; }
       `}</style>
 
       {errorMsg && <div className="pro-alert">{errorMsg}</div>}
@@ -269,17 +279,15 @@ const Login = () => {
                         required
                       />
                     </div>
-                    <label style={{fontSize:'12px', color:'#e5e7eb', display:'inline-flex', alignItems:'center', gap:6}}>
-                      <input
-                        type="checkbox"
-                        checked={recordarme}
-                        onChange={(e) => setRecordarme(e.target.checked)}
-                      />
-                      Recordarme
-                    </label>
+
                     <button type="submit" className="pro-btn">
                       <i className="fas fa-sign-in-alt"></i> INGRESAR
                     </button>
+
+                    {/* Enlace: ¿Olvidaste tu contraseña? */}
+                    <div className="pro-forgot">
+                      <Link to="/recuperar">¿Olvidaste tu contraseña?</Link>
+                    </div>
                   </form>
                 </div>
               )}
